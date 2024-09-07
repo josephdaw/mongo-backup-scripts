@@ -7,7 +7,13 @@ This repository contains scripts to backup and restore a MongoDB database.
 It is recommended to create a virtual environment to install the required dependencies. To create a virtual environment, run the following command:
 
 ```bash
-python3 -m venv venv
+python3 -m venv <environment-name>
+```
+
+For example:
+
+```bash
+python3 -m venv .venv
 ```
 
 To activate the virtual environment, run one of the following commands:
@@ -15,13 +21,22 @@ To activate the virtual environment, run one of the following commands:
 - on MacOS/Linux:
 
   ```bash
-  source venv/bin/activate
+  source <environment-name>/bin/activate
+  ```
+
+  For example:
+
+  ```bash
+  source .venv/bin/activate
   ```
 
 - on Windows:
-
   ```bash
-  venv\Scripts\activate
+  <environment-name>\Scripts\activate
+  ```
+  For example:
+  ```bash
+  .venv\Scripts\activate
   ```
 
 To install the required dependencies, run the following command:
