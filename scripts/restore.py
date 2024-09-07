@@ -1,3 +1,5 @@
+"""Module to restore a MongoDB database from a backup."""
+
 import os
 import subprocess
 
