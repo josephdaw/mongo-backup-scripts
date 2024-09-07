@@ -4,32 +4,17 @@ import os
 import subprocess
 
 
-def restore_backup(uri, database_name, backup_directory):
+def restore_backup(
+    uri, restored_database_name, backup_directory, backed_up_database_name
+):
     """Restore a MongoDB database from a backup."""
-    # List available backups
-    backups = sorted(os.listdir(backup_directory))
-    if not backups:
-        print("No backups found.")
-        return
+    restore_path = os.path.join(uri, restored_database_name)
+    backup_path = os.path.join(backup_directory, backed_up_database_name)
 
-    # Select the most recent backup
-    backup_filename = backups[-1]
-    backup_path = os.path.join(backup_directory, backup_filename)
-
-    print(f"Selected backup file: {backup_path}")
-
-    # Restore backup using --nsInclude
+    # Restore backup
     try:
         result = subprocess.run(
-            [
-                "mongorestore",
-                "--uri",
-                uri,
-                "--nsInclude",
-                f"{database_name}.*",
-                "--archive=" + backup_path,
-                "--gzip",
-            ],
+            ["mongorestore", "--uri=" + restore_path, backup_path],
             check=True,
             capture_output=True,
             text=True,
