@@ -49,33 +49,23 @@ pip install -r requirements.txt
 
 ## Backup
 
-The backup script is a bash script that uses the `mongodump` command to backup a MongoDB database. The script takes the following parameters:
+The backup script is a python script that uses the `mongodump` command to backup a MongoDB database. The script takes the following parameters:
 
-- `--host`: The host of the MongoDB database.
-- `--port`: The port of the MongoDB database.
+- `--uri`: The address of the MongoDB database.
 - `--db`: The name of the database to backup.
 - `--out`: The directory where the backup will be stored.
 
-Example usage:
-
-```bash
-./backup.sh --host localhost --port 27017 --db mydb --out /path/to/backup
-```
+You will need to provide the required values in a .env file.
 
 ## Restore
 
 The restore script is a bash script that uses the `mongorestore` command to restore a MongoDB database from a backup. The script takes the following parameters:
 
-- `--host`: The host of the MongoDB database.
-- `--port`: The port of the MongoDB database.
+- `--uri`: The restore address of the MongoDB database.
 - `--db`: The name of the database to restore.
 - `--dir`: The directory where the backup is stored.
 
-Example usage:
-
-```bash
-./restore.sh --host localhost --port 27017 --db mydb --dir /path/to/backup
-```
+You will need to provide the required values in a .env file.
 
 ## License
 
