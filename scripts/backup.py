@@ -2,34 +2,79 @@
 
 import os
 import subprocess
+import logging
+from typing import Optional
 
 from dotenv import load_dotenv
 
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
 def create_backup(
-    mongodb_uri,
-    database_name,
-    backup_directory,
-):
-    """Create a backup of a MongoDB database."""
+    mongodb_uri: str,
+    database_name: str,
+    backup_directory: str,
+    timeout: Optional[int] = 300
+) -> bool:
+    """Create a backup of a MongoDB database.
+    
+    Args:
+        mongodb_uri: MongoDB connection string
+        database_name: Name of database to backup
+        backup_directory: Directory to store backup files
+        timeout: Command timeout in seconds (default: 300)
+        
+    Returns:
+        bool: True if backup successful, False otherwise
+        
+    Raises:
+        subprocess.CalledProcessError: If mongodump command fails
+        subprocess.TimeoutExpired: If backup takes longer than timeout
+    """
+    logger.info(f"Starting backup of database '{database_name}'")
+    
+    try:
+        # Ensure backup directory exists
+        os.makedirs(backup_directory, exist_ok=True)
+        logger.info(f"Backup directory created: {backup_directory}")
 
-    # Ensure backup directory exists
-    os.makedirs(backup_directory, exist_ok=True)
-
-    # Create backup
-    subprocess.run(
-        [
-            "mongodump",
-            "--uri",
-            mongodb_uri,
-            "--db",
-            database_name,
-            "--out=" + backup_directory,
-        ],
-        check=True,
-    )
-
-    print(f"Backup completed for {database_name}")
+        # Create backup with timeout and error handling
+        result = subprocess.run(
+            [
+                "mongodump",
+                "--uri",
+                mongodb_uri,
+                "--db",
+                database_name,
+                "--out=" + backup_directory,
+            ],
+            check=True,
+            timeout=timeout,
+            capture_output=True,
+            text=True
+        )
+        
+        if result.stderr:
+            logger.warning(f"Backup warnings: {result.stderr}")
+        
+        logger.info(f"Backup completed successfully for {database_name}")
+        return True
+        
+    except subprocess.TimeoutExpired as e:
+        logger.error(f"Backup timed out after {timeout} seconds: {e}")
+        raise
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Backup failed with exit code {e.returncode}: {e.stderr}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error during backup: {e}")
+        raise
 
 
 # Example usage
