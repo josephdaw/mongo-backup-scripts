@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from scripts import create_backup  # pylint: disable=wrong-import-position
+from scripts.backup import create_backup  # pylint: disable=wrong-import-position
 
 # %% Load environment variables from .env file
 load_dotenv()
